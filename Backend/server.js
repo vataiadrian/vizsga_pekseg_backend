@@ -3,21 +3,21 @@ const express = require('express');
 const mysql = require('mysql');
 const cors = require('cors');
 const app = new express();
-const port = process.env./*......*/;
+const port = process.env.PORT;
 
 // .............................
 // .............................
 
 var pool = mysql.createPool({
     connectionLimit: 10,
-    host: process.env./*......*/,
-    user: process.env./*......*/,
-    password: process.env./*......*/,
-    database: process.env./*......*/
+    host: process.env.DBHOST,
+    user: process.env.DBUSER,
+    password: process.env.DBPASS,
+    database: process.env.database
 });
 
 // User login checking
-app./*......*/('/login', (req, res) => {
+app.get('/login', (req, res) => {
     let data = {
         email: req.body.email,
         pass: req.body.passwd,
@@ -30,16 +30,16 @@ app./*......*/('/login', (req, res) => {
 });
 
 // SELECT ALL RECORDS FROM :table
-app./*......*/('/:table', (req, res) => {
-    //...................................
-    //...................................
-    //...................................
-    //...................................
-    //...................................
+app.get('/:table', (req, res) => {
+    let table = req.params.table;
+    pool.query(`SELECT * FROM ${table}`, (err, results) => {
+        if (err) throw err;
+        res.json(results);
+    });
 });
 
 // SELECT ONE RECORD FROM :table
-app./*......*/('/:table/:field/:id', (req, res) => {
+app.get('/:table/:field/:id', (req, res) => {
     let table = req.params.table;
     let field = req.params.field;
     let id = req.params.id;
@@ -50,7 +50,7 @@ app./*......*/('/:table/:field/:id', (req, res) => {
 });
 
 // INSERT RECORD TO :table
-app./*......*/('/:table', (req, res) => {
+app.get('/:table', (req, res) => {
     let table = req.params.table;
     let data = req.body;
 
@@ -73,7 +73,7 @@ app./*......*/('/:table', (req, res) => {
 });
 
 // UPDATE RECORD IN :table
-app./*......*/('/:table/:id', (req, res) => {
+app.get('/:table/:id', (req, res) => {
     let table = req.params.table;
     let id = req.params.id;
     let data = req.body;
@@ -95,7 +95,7 @@ app./*......*/('/:table/:id', (req, res) => {
 });
 
 // DELETE ONE RECORD FROM :table
-app./*......*/('/:table/:id', (req, res) => {
+app.get('/:table/:id', (req, res) => {
     let table = req.params.table;
     let id = req.params.id;
     pool.query(`DELETE FROM ${table} WHERE ID=${id}`, (err, results) => {
@@ -105,7 +105,7 @@ app./*......*/('/:table/:id', (req, res) => {
 });
 
 // DELETE ALL RECORD FROM :table
-app./*......*/('/:table', (req, res) => {
+app.get('/:table', (req, res) => {
     let table = req.params.table;
     pool.query(`DELETE FROM ${table}`, (err, results) => {
         if (err) throw err;
